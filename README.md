@@ -38,6 +38,7 @@ products/
 
 ## 约定
 
+- **新用户**：先看 [快速上手指南](docs/quickstart.md)（怎么查/怎么读/怎么信）
 - 新增产品：读 [CONTRIBUTING.md](CONTRIBUTING.md) 与 [docs/template-product.md](docs/template-product.md)
 - 数字类内容可能随官方更新而过时：每条事实带「来源 + 复核日期」，复核规则见 CONTRIBUTING
 
