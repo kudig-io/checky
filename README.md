@@ -36,6 +36,8 @@ products/
 - **云原生**：ACK、ACR
 - **大数据**：MaxCompute、Hologres、Flink、EMR、DataWorks
 
+全库含 **69 张 Mermaid 图**（架构图、日志流转图、告警链路图、关键链路时序图、选型决策树），逐图带官方来源。
+
 ## 约定
 
 - **新用户**：先看 [快速上手指南](docs/quickstart.md)（怎么查/怎么读/怎么信）
