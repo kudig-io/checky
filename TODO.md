@@ -12,17 +12,19 @@
 
 ---
 
-## P0 · 本地 Web 预览站（上次因 TCC 中断，内容已定稿）
+## P0 · 本地 Web 预览站（✅ 2026-11-24 完成，五项验收全绿）
 
-- [ ] 新建 `package.json`：devDeps = `vitepress ^1.6.3`、`vitepress-plugin-mermaid ^2.0.17`、`mermaid ^11.4.1`；scripts：`dev/build/preview` = `vitepress dev|build|preview .`
-- [ ] 新建 `.vitepress/config.mjs`：`withMermaid(defineConfig(...))`
+- [x] 新建 `package.json`：devDeps = `vitepress ^1.6.3`、`vitepress-plugin-mermaid ^2.0.17`、`mermaid ^11.4.1`；scripts：`dev/build/preview` = `vitepress dev|build|preview .`
+- [x] 新建 `.vitepress/config.mjs`：`withMermaid(defineConfig(...))`
   - 侧边栏自动生成：扫描 `products/*/`，每产品 = 导览 + 编号篇目（去 `NN-` 前缀显示），分支子目录（如 `apsara-v3.18.6`）作折叠组
   - nav：首页 / 产品索引 `/products/INDEX` / 快速上手 `/docs/quickstart` / GitHub
-  - `search: { provider: 'local' }`、`cleanUrls: true`、`outline: [2,3]`
-- [ ] 新建根 `index.md`：VitePress `layout: home`（hero：云速查 checky + 4 个 features：20 产品/69 图/来源强制/九篇结构）
-- [ ] `npm install && npm run dev` → 浏览器开 `http://localhost:5173`
-- [ ] 验收：① 首页 hero 正常 ② 任一产品 9 篇可翻、侧边栏分支折叠可用 ③ 抽检 3 张 Mermaid 图渲染 ④ 本地搜索命中 ⑤ `npm run build` 通过
-- [ ] README「约定」区补一行本地预览命令
+  - `search: { provider: 'local' }`（在 `themeConfig` 下）、`cleanUrls: true`、`outline: [2,3]`
+  - **必须** `vite.optimizeDeps.include: ['mermaid']`：mermaid 只被 md 页面动态引用，不显式 include 会导致 dev 注水失败（fastdom CJS interop 报错）
+- [x] 新建根 `index.md`：VitePress `layout: home`（hero：云速查 checky + 4 个 features：20 产品/69 图/来源强制/九篇结构）
+- [x] `npm install && npm run dev` → 浏览器验收（本机 5173~5175 被其他项目占用，实际 5176，端口以终端提示为准）
+- [x] 验收：① 首页 hero 正常 ② 任一产品 9 篇可翻、侧边栏分支折叠可用 ③ 抽检 3 张 Mermaid 图渲染 ④ 本地搜索命中 ⑤ `npm run build` 通过
+- [x] README「约定」区补一行本地预览命令
+- [x] 附带修复（build 死链 73→0）：全库 68 处目录式交叉链接 `../<code>/` → `../<code>/README`；README/quickstart 的 INDEX 链接改 `INDEX`；LICENSE 链接外链化；模板示例链接转行内码
 
 ## P1 · Gate 脚本化 + CI（把手工检查变资产）
 

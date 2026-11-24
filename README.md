@@ -29,7 +29,7 @@ products/
 
 ## 产品覆盖
 
-四类共 **20 个产品**，状态与首版复核日期见 [products/INDEX.md](products/INDEX.md)：
+四类共 **20 个产品**，状态与首版复核日期见 [products/INDEX.md](products/INDEX)：
 
 - **计算存储网络**：ECS、OSS、NAS、EBS、VPC、SLB/ALB/NLB、CDN、NAT
 - **数据库**：RDS MySQL、PolarDB、Redis、MongoDB、DTS
@@ -43,7 +43,8 @@ products/
 - **新用户**：先看 [快速上手指南](docs/quickstart.md)（怎么查/怎么读/怎么信）
 - 新增产品：读 [CONTRIBUTING.md](CONTRIBUTING.md) 与 [docs/template-product.md](docs/template-product.md)
 - 数字类内容可能随官方更新而过时：每条事实带「来源 + 复核日期」，复核规则见 CONTRIBUTING
+- 本地预览站：`npm install && npm run dev` → 浏览器开 `http://localhost:5173`（端口被占时以终端提示为准）
 
 ## License
 
-代码与文档结构 [MIT](LICENSE)。各云厂商的产品参数与架构描述版权归原厂商所有，本项目仅以事实引用方式使用并注明出处。
+代码与文档结构 [MIT](https://github.com/kudig-io/checky/blob/main/LICENSE)。各云厂商的产品参数与架构描述版权归原厂商所有，本项目仅以事实引用方式使用并注明出处。
