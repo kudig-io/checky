@@ -10,6 +10,11 @@ import { fileURLToPath } from 'node:url'
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const CONCURRENCY = 4
 const TIMEOUT_MS = 120000
+// 优先用仓库内安装的 mmdc（npm ci 已带 Chrome），缺省回落 npx -y 在线取
+const MMDC = path.join(ROOT, 'node_modules', '.bin', 'mmdc')
+const runMmdc = fs.existsSync(MMDC)
+  ? (args, cb) => execFile(MMDC, args, { timeout: TIMEOUT_MS }, cb)
+  : (args, cb) => execFile('npx', ['-y', '@mermaid-js/mermaid-cli', ...args], { timeout: TIMEOUT_MS }, cb)
 
 const files = []
 ;(function walk(dir) {
@@ -41,12 +46,14 @@ function render(d, i) {
   const output = path.join(tmp, `d-${i}.svg`)
   fs.writeFileSync(input, d.code)
   return new Promise((resolve) => {
-    execFile(
-      'npx',
-      ['-y', '@mermaid-js/mermaid-cli', '-i', input, '-o', output, '-p', pptrCfg, '--quiet'],
-      { timeout: TIMEOUT_MS },
-      (err) => resolve({ ...d, i, err: err ? String(err.message).split('\n')[0] : null })
-    )
+    runMmdc(['-i', input, '-o', output, '-p', pptrCfg, '--quiet'], (err, _stdout, stderr) => {
+      resolve({
+        ...d,
+        i,
+        err: err ? String(err.message).split('\n')[0] : null,
+        stderr: err ? String(stderr || '').trim().split('\n').slice(-3).join(' | ') : null
+      })
+    })
   })
 }
 
@@ -64,7 +71,12 @@ fs.rmSync(tmp, { recursive: true, force: true })
 
 if (failures.length) {
   console.error(`✗ ${failures.length}/${diagrams.length} 个图渲染失败：`)
-  for (const f of failures) console.error(`    ${f.rel} #${f.i + 1}  ${f.err}`)
+  for (const f of failures) console.error(`    ${f.rel} #${f.i + 1}  ${f.stderr || f.err}`)
+  // 全军覆没多为环境问题（Chrome 缺失/沙箱拦截），展开首例完整错误便于定位
+  if (failures.length === diagrams.length && failures[0]) {
+    console.error(`\n[首例完整错误] ${failures[0].rel} #${failures[0].i + 1}`)
+    console.error(failures[0].stderr || failures[0].err)
+  }
   process.exit(1)
 }
 console.log(`✓ ${diagrams.length} 个 mermaid 图全部渲染通过`)

@@ -8,7 +8,8 @@ on:
 
 jobs:
   gate:
-    runs-on: ubuntu-latest
+    # 24.04 runner 有 AppArmor 限制 Chrome 启动的已知问题，固定 22.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
 
