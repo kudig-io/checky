@@ -75,20 +75,21 @@
 - [ ] `products/ecs/aws/` 分支骨架：README（口径来源+差异表）+ 01/02 篇；来源域白名单按分支放行（docs.aws.amazon.com 等）
 - [ ] 验收：1 个试点分支完成 → 结论回写 `docs/design.md` §八（分支命名、域白名单规则）
 
-## P6 · 静态站发布（⏸ 2026-11-25 挂起：GitHub Pages 对私有仓需付费 plan，当前免费 plan 报 422 不支持）
+## P6 · 静态站发布（✅ 2026-11-25 发布上线，公网验收三项全过）
 
-- [ ] **前置分叉（需用户拍板其一）**：a) 仓库转公开（免费 Pages 即可用）｜ b) GitHub plan 升级（Pro/Team）｜ c) 换第三方托管（Vercel/Netlify/Cloudflare Pages，私有仓可免费，需账号授权）
-- [ ] `npm run build` 产物发布（Actions workflow：build → deploy-pages；**注意** project page 需在 config.mjs 加 `base: '/checky/'`，可用环境变量注入避免影响本地 dev）
-- [ ] README 顶部加 Pages 链接徽章
-- [ ] 验收：公网 URL 可访问、图与搜索可用
+- [x] 前置分叉：用户拍板 **仓库转公开**（免费 plan 唯一路径，私有 Pages 422）；Pages 启用 build_type=workflow，https://kudig-io.github.io/checky/
+- [x] `npm run build` 产物发布：`.github/workflows/deploy.yml`（push(main)/手动 → npm ci → 构建（`VITEPRESS_BASE=/checky/` 注入）→ upload → deploy-pages）；config.mjs `base` 走环境变量，本地 dev 不受影响
+  - **坑（已修）**：新仓库 artifact 元数据传播可达分钟级，deploy-pages 在上传后亚秒查询恒拿 0（run 45586172800/45600861232 稳定复现）→ 部署前按 run_id 轮询 artifact 可见（最长 5 分钟）再 deploy（run 45601400323 success）
+- [x] README 顶部三徽章：在线阅读 / CI / Deploy
+- [x] 验收：公网 200、hero/base 前缀正确、ecs 架构页 SVG 渲染、本地搜索「生命周期」命中 16 条
 
 ---
 
 ## 优先级与依赖
 
 ```
-P0 本地站 ✅ ──→ P6 Pages（⏸ 等 plan/可见性拍板，见 P6 节）
-P1 CI ✅ 全绿（push/PR 触发）
+P0 本地站 ✅ ──→ P6 Pages ✅ 已上线（kudig-io.github.io/checky，仓库已公开）
+P1 CI ✅ 全绿（push/PR 触发）＋ deploy ✅（push(main)/手动）
 P2 DP-16（等语料，随时可插队）
 P3 复核 ✅ 机制就位（下批 2026-12-18）
 P4 扩围（等选型）──→ P5 多云（等确认）
