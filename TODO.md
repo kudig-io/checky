@@ -39,7 +39,7 @@
   - 负向验证：注入 无来源小节 / 非白名单域名 / 死链，三项全部被拦
 - [x] 新建 `scripts/render-diagrams.mjs`：抽取全部 ```` ```mermaid ```` 块 → mmdc 渲染（products 69 张 + 模板示例 1 张 = 70 张全过；并发 4；`--no-sandbox` 兼容 CI root；坏图注入验证退出非 0）
 - [x] 新建 `.github/workflows/ci.yml`：push(main)/PR 触发 → `npm ci` → `bash scripts/gate.sh` → 渲染脚本
-- [x] 验收：本地 `bash scripts/gate.sh` 全绿；`git push` 后 Actions 首次运行通过（run 见 TODO 底部速记）
+- [x] 验收：本地 `bash scripts/gate.sh` 全绿；Actions 首跑 45537388074 失败（70 图统一失败，渲染环境问题：npx 瞬态装 Chrome 不可靠 + 24.04 AppArmor 阻 Chrome）→ `ad2c2d3` 修复（mermaid-cli 入 devDeps、runner 固定 ubuntu-22.04、stderr 透出）→ 二跑 45538809423 **success**
 
 ## P2 · DP-16 专有云 3.18.6 分支（挂起，待语料）
 
@@ -95,7 +95,8 @@ P4 扩围（等选型）──→ P5 多云（等确认）
 
 ## 当前仓库状态速记
 
-- 远端 `main` = 本地 = `5f48542` 之后（以 `git log origin/main..main` 为准，应为空）
+- 远端 `main` = 本地（以 `git log origin/main..main` 为准，应为空）；P0/P1 已完成推送，CI 绿（badge 未加，P6 一并做）
 - 标记存量：`⚠️ 待核` 118 ｜ `📋 待补` 187（控制台口径/结构性已分类）
-- 图：69 张（架构 20 / 日志流转 20 / 告警链路 20 / 关键链路 6 / 决策树 3）
+- 图：69 张（架构 20 / 日志流转 20 / 告警链路 20 / 关键链路 6 / 决策树 3）+ 模板示例 1 = CI 渲染 70
 - 计划：`docs/development-plan.md` DP-01~18 全部勾选（v2.1 完成）
+- 站点资产：VitePress 三件套（P0）、scripts/{gate.sh, check-links.mjs, render-diagrams.mjs} + .github/workflows/ci.yml（P1）
