@@ -44,5 +44,19 @@ jobs:
         with:
           path: .vitepress/dist
 
+      # 新仓库 artifact 元数据传播可达分钟级，deploy-pages 上传后亚秒内查询会拿到 0
+      # （run 45586172800 / 45600861232 稳定复现）——先轮询到 API 可见再部署
+      - name: 等待 artifact 元数据可见
+        run: |
+          for i in $(seq 1 30); do
+            n=$(curl -sf -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts?name=github-pages" \
+              | grep -oE '"total_count": *[0-9]+' | grep -oE '[0-9]+' || echo 0)
+            echo "attempt $i: total_count=$n"
+            [ "${n:-0}" -ge 1 ] && exit 0
+            sleep 10
+          done
+          echo "artifact 5 分钟内未可见，判定失败"; exit 1
+
       - id: deployment
         uses: actions/deploy-pages@v4
