@@ -1,0 +1,27 @@
+name: CI
+
+# push/PR 触发：六项 gate + 全量 Mermaid 图渲染（TODO.md P1）
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 六项 gate
+        run: bash scripts/gate.sh
+
+      - name: 渲染全部 Mermaid 图
+        run: node scripts/render-diagrams.mjs

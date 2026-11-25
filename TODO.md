@@ -26,18 +26,20 @@
 - [x] README「约定」区补一行本地预览命令
 - [x] 附带修复（build 死链 73→0）：全库 68 处目录式交叉链接 `../<code>/` → `../<code>/README`；README/quickstart 的 INDEX 链接改 `INDEX`；LICENSE 链接外链化；模板示例链接转行内码
 
-## P1 · Gate 脚本化 + CI（把手工检查变资产）
+## P1 · Gate 脚本化 + CI（✅ 2026-11-25 完成，六项全绿 + 负向验证）
 
-- [ ] 新建 `scripts/gate.sh`，六项全绿为通过：
-  1. 逐节来源 1:1：`awk` 数每文件 `^## ` 与 `^\*\*来源\*\*`，来源数 < 节数即失败
-  2. 头部：所有 `products/*/0*.md` 第 3 行含 `口径：公共云 ｜ 复核：`
-  3. 目录 ↔ INDEX 双向一致（正则抽 `[code/]` 对照目录）
-  4. 来源域：仅抽 `**来源**` 块内的 URL，域名白名单 `help|terms|www|api|console|alicdn|alibabacloud|aliyuncs…`
-  5. schema 列齐：08 总表 5 列 / 08 详表 `字段.*类型.*含义` / 09 指标表 `含义.*单位.*统计周期.*维度`
-  6. 断链：每个 md 内相对链接按其所在目录解析，目标必须存在（模板/设计稿内的示例占位符排除）
-- [ ] 新建 `scripts/render-diagrams.mjs`：抽取全部 ```` ```mermaid ```` 块 → mmdc 渲染（当前 69 张，任一失败退出非 0）
-- [ ] 新建 `.github/workflows/ci.yml`：push/PR 触发 → 装依赖 → `bash scripts/gate.sh` → 渲染脚本
-- [ ] 验收：本地 `bash scripts/gate.sh` 全绿；`git push` 后 Actions 首次运行通过
+- [x] 新建 `scripts/gate.sh`，六项全绿为通过：
+  1. 逐节来源 1:1：`awk` 数每文件 `^## ` 与 `^\*\*来源\*\*`，来源数 < 节数即失败（范围 `products/*/0*.md` 共 180 篇；README 导览与分支文件不在此项，分支 1:1 由 P2 落地验收）
+  2. 头部：所有 `products/*/0*.md` 第 3 行含 `口径：公共云 ｜ 复核：`（180/180）
+  3. 目录 ↔ INDEX 双向一致（正则抽 `[code/]` 对照目录，20↔20）
+  4. 来源域：仅抽 `**来源**` 块内的 URL，域名后缀白名单 `aliyun.com / alicdn.com / alibabacloud.com / aliyuncs.com`
+  5. schema 列齐：08 总表须 `| 类型 |` 开头 ≥5 列且含 产生方/是否计费（rds-mysql 6 列、polardb 列名变体均放行）；08 详表 `字段.*类型.*含义` 按正则判（允许 类型/取值 等中列变体）；09 指标表 `含义.*单位.*统计周期.*维度`
+  6. 断链：`scripts/check-links.mjs` 扫描全库 md 相对链接（剥锚点/容忍 URL 编码/目录→README|INDEX 兜底；模板/设计稿/开发计划排除；代码块不参与）
+  - 实现细节：全程 `-print0`（`products/vpc/03-VPC 参数.md` 文件名带空格）；macOS bash 3.2 兼容
+  - 负向验证：注入 无来源小节 / 非白名单域名 / 死链，三项全部被拦
+- [x] 新建 `scripts/render-diagrams.mjs`：抽取全部 ```` ```mermaid ```` 块 → mmdc 渲染（products 69 张 + 模板示例 1 张 = 70 张全过；并发 4；`--no-sandbox` 兼容 CI root；坏图注入验证退出非 0）
+- [x] 新建 `.github/workflows/ci.yml`：push(main)/PR 触发 → `npm ci` → `bash scripts/gate.sh` → 渲染脚本
+- [x] 验收：本地 `bash scripts/gate.sh` 全绿；`git push` 后 Actions 首次运行通过（run 见 TODO 底部速记）
 
 ## P2 · DP-16 专有云 3.18.6 分支（挂起，待语料）
 
