@@ -1,0 +1,48 @@
+name: Deploy Pages
+
+# push(main)/手动触发：构建站点并发布到 GitHub Pages（TODO.md P6）
+# 依赖：仓库已公开 + Pages 已启用 build_type=workflow（2026-11-25 完成）
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 构建站点（注入 Pages base）
+        run: npm run build
+        env:
+          VITEPRESS_BASE: /checky/
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .vitepress/dist
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -97,6 +97,8 @@ export default withMermaid(
     lang: 'zh-CN',
     title: '云速查 checky',
     description: '阿里云产品速查手册：20 个产品 × 9 篇结构化速查，逐节标注官方来源与复核日期',
+    // GitHub Pages project page 部署时注入 VITEPRESS_BASE=/checky/，本地 dev/build 不受影响
+    base: process.env.VITEPRESS_BASE || '/',
     cleanUrls: true,
     outline: [2, 3],
     vite: {

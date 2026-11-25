@@ -1,5 +1,9 @@
 # checky · 云速查
 
+[![在线阅读](https://img.shields.io/badge/%E5%9C%A8%E7%BA%BF%E9%98%85%E8%AF%BB-github.io-0969da)](https://kudig-io.github.io/checky/)
+[![CI](https://github.com/kudig-io/checky/actions/workflows/ci.yml/badge.svg)](https://github.com/kudig-io/checky/actions/workflows/ci.yml)
+[![Deploy](https://github.com/kudig-io/checky/actions/workflows/deploy.yml/badge.svg)](https://github.com/kudig-io/checky/actions/workflows/deploy.yml)
+
 按**产品维度**快速查看云产品**基础信息、组件、日志、告警、架构图**的速查手册：每个产品九篇展开——架构（Mermaid 架构图 + 组件清单）、资源类型与参数、配套、网络、配额、计费、日志与审计、监控与告警。所有数据取自官方文档，逐条标注来源。
 
 > 名字读作 "checky"（check + y）：check = 核对。查一个参数，像抓快照一样快。
